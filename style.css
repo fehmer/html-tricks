@@ -1,0 +1,413 @@
+@keyframes scanline {
+    0% { bottom: 100%; }
+    80% { bottom: 100%; }
+    100% { bottom: 0; }
+}
+
+:root{
+    /* colors for dark theme */
+    --dark-text-color: #209618;
+    --dark-background-color: #041203;
+    --dark-link-color: #2CC920;
+    --dark-accent-color: #fdb431;
+
+    /* colors for light theme */
+    --light-text-color: #0a2f07;
+    --light-background-color: #28ff6c;
+    --light-link-color: #1a7b12;
+    --light-accent-color:white;
+
+    /* default is dark theme */
+    --text-color: var(--dark-text-color);
+    --background-color: var(--dark-background-color);
+    --link-color: var(--dark-link-color);
+    --accent-color: var(--dark-accent-color);
+
+    --background-color-stripe: color-mix(in oklab,#000 50%,var(--background-color));
+    --navbar-height: 4em;
+
+    /* scrollbar for firefox */
+    scrollbar-color: var(--text-color) var(--background-color);
+    scrollbar-width: .5em;
+}
+
+
+/* theme selector */
+:root:has(#theme_toggle:checked) {
+    --text-color: var(--light-text-color);
+    --background-color: var(--light-background-color);
+    --link-color: var(--light-link-color);
+    --accent-color: var(--light-accent-color);
+
+    & #theme_dark{ display: inline-block; }
+    & #theme_light{ display:none; }
+}
+
+#theme_dark{ display:none }
+
+@media (prefers-color-scheme: light) {
+     :root{
+        --text-color: var(--light-text-color);
+        --background-color: var(--light-background-color);
+        --link-color: var(--light-link-color);
+        --accent-color: var(--light-accent-color);
+
+        #theme_dark{ display: inline-block;}
+        #theme_light{ display: none;}
+    }
+
+    /* theme selector */
+    :root:has(#theme_toggle:checked) {
+        --text-color: var(--dark-text-color) ;
+        --background-color: var(--dark-background-color) ;
+        --link-color: var(--dark-link-color) ;
+        --accent-color: var(--dark-accent-color) ;
+
+        #theme_dark{ display: none ;}
+        #theme_light{ display: inline-block ;}
+    }
+}
+
+
+/* text selection */
+::selection {
+  color: var(--background-color);
+  background: var(--text-color);
+}
+
+/* reset all elements */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: var(--text-color);
+
+}
+
+/* glow effects */
+* {
+  text-shadow: 3px 0 0 color-mix(in oklab,currentColor 20%,transparent),-3px 0 color-mix(in oklab,currentColor 30%,transparent),0 0 3px;
+}
+
+svg {
+    filter: drop-shadow(1px 1px 1px var(--text-color));
+}
+
+body{
+    font-family: Monaco, Consolas, Ubuntu Mono, monospace;
+    font-size: clamp(1rem, 1.25vw, 2rem);
+    line-height: 1.25;
+    background: radial-gradient(ellipse,color-mix(in oklab, var(--background-color), white 5%) 0%, var(--background-color) 90%) fixed;
+
+
+    /* background stripes */
+    &::after {
+        content: ' ';
+        background-size: 50% 5px;
+        inset: 0;
+        display: block;
+        mix-blend-mode: color-burn;
+        opacity: .3;
+        pointer-events: none;
+        position: fixed;
+        z-index: 999999999;
+        background-image: repeating-linear-gradient(0deg,var(--background-color-stripe) 0,var(--background-color-stripe) 1px,transparent 2px,transparent 5px);
+    }
+
+    /* maze generated background */
+    &::before {
+        display: block;
+        color: color-mix(in oklab, var(--background-color), white 10%);
+        line-height: 0.8;
+        font-family: monospace;
+        content: attr(data-before);
+        pointer-events: none;
+        word-break: break-word;
+        position: fixed;
+        z-index: -1;
+        width: 110%;
+    }
+
+    /* scrollbar for chrome */
+    &::-webkit-scrollbar {
+        width: .5em;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: var(--background-color);
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--text-color);
+    }
+
+
+}
+
+nav{
+    height: var(--navbar-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid currentColor;
+    box-shadow: 0px 2px 2px color-mix(in oklab,currentColor 20%,transparent);
+
+    >a {
+        text-decoration: none;
+        margin-left: 2em;
+        font-size: 1.25em;
+    }
+
+    & input[type="checkbox"]{
+        display: none;
+    }
+
+    .burger_button{
+        display: none;
+    }
+
+    >ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        list-style: none;
+        height: 100%;
+
+
+        >li {
+            height: 100%;
+            width: 8em;
+            text-align: center;
+            position: relative;
+
+            >a {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+            }
+
+            &:hover, &:focus-within {
+                border-bottom: 2px solid var(--accent-color);
+                box-shadow:0px 3px color-mix(in oklab,var(--accent-color) 20%,transparent);
+                filter: drop-shadow(0px 2px 2px var(--accent-color));
+                > a {
+                    color: var(--accent-color);
+                }
+            }
+
+            /* item with a dropdown menu */
+            &:has(input[type="checkbox"]){
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                &::after{
+                    content: '❯';
+                    position: absolute;
+                    right: 0;
+                }
+
+                &:hover {
+                    >ul {
+                        display: flex;
+                    }
+                    >label  {
+                        color: var(--accent-color);
+                    }
+                    &::after{
+                        transform: rotate(90deg);
+                        color: var(--accent-color);
+                    }
+                }
+
+
+
+                >ul {
+                    height: min-content;
+                    width: 8em;
+                    background: var(--background-color);
+                    display: none;
+                    flex-direction: column;
+                    position: absolute;
+                    left: 0;
+                    top: var(--navbar-height);
+                    list-style: none;
+                    border: 1px solid var(--accent-color);
+
+                    >li{
+                        height: 70px;
+                        width: 100%;
+                        padding-top:1em;
+
+                        >a {
+                            text-decoration: none;
+                            &:hover, &:active, &:focus{
+                                 color: var(--accent-color);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+main {
+    margin: 25px;
+    & a{
+        text-decoration: none;
+        color:  var(--link-color);
+
+        &:hover, &:focus, &:active{
+            color: var(--accent-color);
+        }
+    }
+
+    > ul{
+        margin-left: 2em;
+    }
+
+    > h1{
+        margin-top: 25px;
+        margin-bottom: 15px;
+    }
+}
+
+#scanline {
+    animation: scanline 10s linear infinite;
+    background: linear-gradient(0deg,transparent 0,var(--background-color) 10%,rgba(0,0,0,.1) 100%);
+    bottom: 100%;
+    height: 100px;
+    opacity: .1;
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    z-index: 1001}
+
+
+@media(max-width: 850px){
+    nav {
+        .burger_button{
+            display: flex;
+            width:  2em;
+            height: 1.5em;
+            margin-right: 2em;
+            flex-direction: column;
+            justify-content: space-between;
+
+            >span{
+                height: 4px;
+                width: 100%;
+                color: var(--text-color);
+                background: currentColor;
+                border-radius: 100px;
+                filter: drop-shadow(1px 1px 1px currentColor);
+            }
+        }
+
+        >ul{
+            width: 100%;
+            background-color: var(--background-color);
+            display: none;
+            position: absolute;
+            top: var(--navbar-height);
+            margin-top: 1px;
+
+            >li {
+                height: min-content;
+                width: 100%;
+
+                >a {
+                    padding: 30px 0;
+                }
+
+                &:hover, &:focus-within {
+                    filter: none;
+                    border:none;
+                    box-shadow: none;
+                    >a{
+                        color: var(--accent-color);
+                    }
+                }
+
+                /* item with a dropdown menu */
+                &:has(input[type="checkbox"]){
+                    display: block;
+                    >label  {
+                        padding: 30px 0;
+                        cursor: pointer;
+                        display: block;
+                    }
+
+                    >input[type="checkbox"]:checked ~ .dropdown{
+                        display: block;
+                    }
+
+                    &::after, &:hover::after{
+                        content: ''
+                    };
+
+                    >ul {
+                        position: static;
+                        width: 100%;
+                        border: none;
+
+                        >li {
+                            padding: 0;
+                            display: block;
+                            position: static;
+                            background: var(--background-color-stripe);
+
+                            >a{
+                                width: 100%;
+                                padding: 0;
+                                justify-content: center;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        #nav_toggle:checked{
+            ~ ul{
+                display: block;
+            }
+
+            /* create a X out of the burger menu */
+            ~ .burger_button {
+                & span {
+                    display: none
+                }
+                & span:first-child{
+                    display: block;
+                    transform: translateY(.6em) rotate(45deg);
+                }
+
+                & span:last-child {
+                    display: block;
+                    transform:  translateY(-.6em) rotate(-45deg);
+                }
+            }
+        }
+   }
+}
+
+/* remove all fancy backgound and glow effects */
+@media (prefers-reduced-transparency),(prefers-contrast: high) {
+    *{
+        text-shadow: none ;
+        filter: none ;
+        box-shadow: none;
+    }
+    body{
+        background: var(--background-color);
+        &:before, &:after, #scanline{
+            display: none;
+        }
+    }
+
+}
