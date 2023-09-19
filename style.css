@@ -44,6 +44,9 @@
 }
 
 #theme_dark{ display:none }
+.theme_button{
+    cursor: pointer;
+}
 
 @media (prefers-color-scheme: light) {
      :root{
@@ -199,7 +202,7 @@ nav{
             }
 
             /* item with a dropdown menu */
-            &:has(input[type="checkbox"]){
+            &:has(label){
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -397,7 +400,7 @@ main {
 }
 
 /* remove all fancy backgound and glow effects */
-@media (prefers-reduced-transparency),(prefers-contrast: high) {
+@media (prefers-reduced-transparency),(prefers-contrast: more) {
     *{
         text-shadow: none ;
         filter: none ;
