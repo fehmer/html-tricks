@@ -329,9 +329,9 @@ main {
         }
     }
 
-    @media (prefers-color-scheme: dark) {
+    @media (prefers-color-scheme: light) {
         #colorscheme::after {
-            content: "dark";
+            content: "light";
         }
     }
 
